@@ -2,7 +2,7 @@
   "name": "voltocli",
   "version": "0.1.0",
   "description": "CLI to help Volto addon development",
-  "main": "index.js",
+  "main": "src/index.js",
   "repository": "git@github.com:nzambello/voltocli.git",
   "author": "Nicola Zambello",
   "license": "MIT",
