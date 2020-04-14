@@ -7,9 +7,16 @@
   "author": "Nicola Zambello",
   "license": "MIT",
   "dependencies": {
+    "chalk": "^4.0.0",
+    "execa": "^4.0.0",
     "fs-extra": "^9.0.0",
+    "load-json-file": "^6.2.0",
+    "lodash.merge": "^4.6.2",
+    "node-emoji": "^1.10.0",
     "ora": "^4.0.3",
-    "prompts": "^2.3.2"
+    "prompts": "^2.3.2",
+    "validate-npm-package-name": "^3.0.0",
+    "write-json-file": "^4.3.0"
   },
   "scripts": {
     "start": "node src/index.js"

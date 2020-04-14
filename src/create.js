@@ -6,5 +6,5 @@ exports.create = ({ addonName, addonURL }) => {
   const spinner = ora(`Creating ${addonName}`).start()
 
   mkAddonsDir()
-  spinner.succeed()
+  spinner.warn('Missing feature: work in progress')
 }

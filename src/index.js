@@ -1,5 +1,6 @@
 'use strict'
 const { prompt } = require('prompts')
+const validate = require('validate-npm-package-name')
 const { add } = require('./add')
 const { create } = require('./create')
 
@@ -24,7 +25,8 @@ const randomName = `volto-${getRandomText(adjs)}-${getRandomText(types)}`
       type: 'text',
       name: 'addonName',
       message: (prev) => `What's ${prev === 'add' ? 'the' : 'your new'} addon name?`,
-      initial: randomName
+      initial: randomName,
+      validate: (value) => validate(value).validForNewPackages
     },
     {
       type: 'text',
