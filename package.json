@@ -5,5 +5,11 @@
   "main": "index.js",
   "repository": "git@github.com:nzambello/voltocli.git",
   "author": "Nicola Zambello",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "prompts": "^2.3.2"
+  },
+  "scripts": {
+    "start": "node index.js"
+  }
 }
