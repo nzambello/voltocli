@@ -1,5 +1,4 @@
 'use strict'
-
 const { prompt } = require('prompts')
 const { add } = require('./add')
 const { create } = require('./create')
