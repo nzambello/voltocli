@@ -17,23 +17,23 @@ const randomName = `volto-${getRandomText(adjs)}-${getRandomText(types)}`
       message: 'Pick an action',
       choices: [
         { title: 'add', description: 'Add an existing addon to your Volto project', value: 'add' },
-        { title: 'create', description: 'Create an addon in your Volto project', value: 'create' }
+        { title: 'create', description: 'Create an addon in your Volto project', value: 'create' },
       ],
-      initial: 0
+      initial: 0,
     },
     {
       type: 'text',
       name: 'addonName',
       message: (prev) => `What's ${prev === 'add' ? 'the' : 'your new'} addon name?`,
       initial: randomName,
-      validate: (value) => validate(value).validForNewPackages
+      validate: (value) => validate(value).validForNewPackages,
     },
     {
       type: 'text',
       name: 'addonURL',
       message: 'Insert git repository URL',
-      initial: `git@github.com:collective/${randomName}.git`
-    }
+      initial: `git@github.com:collective/${randomName}.git`,
+    },
   ]
 
   const answers = await prompt(questions)

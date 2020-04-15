@@ -28,7 +28,11 @@ exports.mkAddonsDir = async () => {
 //   })
 // }
 
-const applyToPackageJson = async (name) => {
+exports.getRepoNameFromURL = (url) => {
+  return url.split('/').slice(-2)[0].split(/:|\./).pop() + '/' + url.split('/').slice(-2)[1].split(/\.|\//)[0]
+}
+
+const applyToPackageJson = async (name, url) => {
   try {
     const packageJson = await loadJsonFile('package.json')
     const newJson = {
@@ -36,13 +40,17 @@ const applyToPackageJson = async (name) => {
         'develop:npx': 'npx -p mrs-developer missdev --config=jsconfig.json --output=addons',
         develop: 'missdev --config=jsconfig.json --output=addons',
         preinstall: 'if [ -f $(pwd)/node_modules/.bin/missdev ]; then yarn develop; else yarn develop:npx; fi',
-        postinstall: 'rm -rf ./node_modules/volto-* && yarn omelette'
+        postinstall: 'rm -rf ./node_modules/volto-* && yarn omelette',
       },
       jest: {
         moduleNameMapper: {
-          [`${name}/(.*)$`]: `<rootDir>/src/addons/${name}/src/$1`
-        }
-      }
+          [`${name}/(.*)$`]: `<rootDir>/src/addons/${name}/src/$1`,
+        },
+      },
+      dependencies: {
+        'mrs-developer': '^1.1.6',
+        [name]: `${this.getRepoNameFromURL(url)}#master`,
+      },
     }
     const updatedJson = merge(packageJson, newJson)
     if (updatedJson.jest.testMatch && updatedJson.jest.testMatch.indexOf('!**/src/addons/**/*') === -1) {
@@ -64,7 +72,7 @@ const applyToMrsDev = async (name, url) => {
 
   const updatedJson = {
     ...mrsDevJson,
-    [name]: { url }
+    [name]: { url },
   }
 
   try {
@@ -85,9 +93,9 @@ const applyToEslintrc = async (name) => {
   const newJson = {
     settings: {
       'import/resolver': {
-        alias: {}
-      }
-    }
+        alias: {},
+      },
+    },
   }
 
   const updatedJson = merge(eslintrc, newJson)
@@ -112,10 +120,10 @@ const applyToJsconfig = async (name) => {
   const newJson = {
     compilerOptions: {
       paths: {
-        [name]: [`addons/${name}`]
+        [name]: [`addons/${name}`],
       },
-      baseUrl: 'src'
-    }
+      baseUrl: 'src',
+    },
   }
 
   const updatedJson = merge(jsconfig, newJson)
@@ -149,11 +157,11 @@ const applyToGitIgnore = () => {
 
 exports.applyConfigs = async (name, url) => {
   return await Promise.all([
-    applyToPackageJson(name),
+    applyToPackageJson(name, url),
     applyToMrsDev(name, url),
     applyToJsconfig(name),
     applyToEslintrc(name),
-    applyToGitIgnore()
+    applyToGitIgnore(),
   ])
 }
 
