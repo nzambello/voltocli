@@ -1,7 +1,7 @@
 'use strict'
 const { prompt } = require('prompts')
 const validate = require('validate-npm-package-name')
-var hostedGitInfo = require('hosted-git-info')
+const hostedGitInfo = require('hosted-git-info')
 const { add } = require('./add')
 const { create } = require('./create')
 
@@ -24,18 +24,33 @@ const randomName = `volto-${getRandomText(adjs)}-${getRandomText(types)}`
     },
     {
       type: 'text',
-      name: 'addonName',
+      name: 'name',
       message: (prev) => `What's ${prev === 'add' ? 'the' : 'your new'} addon name?`,
       initial: randomName,
       validate: (value) => validate(value).validForNewPackages,
     },
     {
       type: 'text',
-      name: 'addonURL',
+      name: 'url',
       message: 'Insert git repository URL',
       initial: `git@github.com:collective/${randomName}.git`,
       validate: (value) => hostedGitInfo.fromUrl(value) !== null,
       format: (value) => hostedGitInfo.fromUrl(value),
+    },
+  ]
+
+  const createQuestions = [
+    {
+      type: 'text',
+      name: 'description',
+      message: 'Insert a description',
+      initial: 'Volto addon to build beautiful things',
+    },
+    {
+      type: 'text',
+      name: 'author',
+      message: 'Insert author name',
+      initial: 'collective',
     },
   ]
 
@@ -47,7 +62,9 @@ const randomName = `volto-${getRandomText(adjs)}-${getRandomText(types)}`
       break
 
     case 'create':
-      create(answers)
+      const createAnswers = await prompt(createQuestions)
+
+      create({ ...answers, ...createAnswers })
       break
   }
 })()
