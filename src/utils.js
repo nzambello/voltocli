@@ -14,10 +14,6 @@ exports.mkAddonsDir = async () => {
   }
 }
 
-exports.getRepoNameFromURL = (url) => {
-  return url.split('/').slice(-2)[0].split(/:|\./).pop() + '/' + url.split('/').slice(-2)[1].split(/\.|\//)[0]
-}
-
 const applyToPackageJson = async (name, url) => {
   try {
     const packageJson = await loadJsonFile('package.json')
@@ -35,7 +31,7 @@ const applyToPackageJson = async (name, url) => {
       },
       dependencies: {
         'mrs-developer': '^1.1.6',
-        [name]: `${this.getRepoNameFromURL(url)}#master`,
+        [name]: url.path(),
       },
     }
     const updatedJson = merge(packageJson, newJson)
@@ -58,7 +54,7 @@ const applyToMrsDev = async (name, url) => {
 
   const updatedJson = {
     ...mrsDevJson,
-    [name]: { url },
+    [name]: { url: url.ssh({ noGitPlus: true }) },
   }
 
   try {
@@ -142,7 +138,7 @@ const applyToGitIgnore = () => {
 }
 
 exports.applyConfigs = async (name, url) => {
-  return await Promise.all([
+  await Promise.all([
     applyToPackageJson(name, url),
     applyToMrsDev(name, url),
     applyToJsconfig(name),
@@ -151,7 +147,7 @@ exports.applyConfigs = async (name, url) => {
   ])
 }
 
-exports.runYarn = async (url) => {
+exports.runYarn = async () => {
   try {
     await exec(`yarn install`)
   } catch (err) {

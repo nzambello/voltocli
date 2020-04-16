@@ -1,6 +1,7 @@
 'use strict'
 const { prompt } = require('prompts')
 const validate = require('validate-npm-package-name')
+var hostedGitInfo = require('hosted-git-info')
 const { add } = require('./add')
 const { create } = require('./create')
 
@@ -33,6 +34,8 @@ const randomName = `volto-${getRandomText(adjs)}-${getRandomText(types)}`
       name: 'addonURL',
       message: 'Insert git repository URL',
       initial: `git@github.com:collective/${randomName}.git`,
+      validate: (value) => hostedGitInfo.fromUrl(value) !== null,
+      format: (value) => hostedGitInfo.fromUrl(value),
     },
   ]
 

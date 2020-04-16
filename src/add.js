@@ -19,7 +19,7 @@ exports.add = ({ addonName, addonURL }) => {
         spinner.succeed('Done!')
 
         console.log(`\n${emoji.emojify(`:white_check_mark: Successfully added ${addonName}`)}\n`)
-        // console.log(chalk.blueBright('\nNow run:\n\n\tyarn\n\nand start your Volto app:\n\n\tyarn start\n\n'))
+        console.log(chalk.blueBright('\nNow start your Volto app:\n\n\tyarn start\n\n'))
         console.log(`${emoji.emojify('Happy hacking! :female-technologist::male-technologist:')}\n\n`)
       })
     })
