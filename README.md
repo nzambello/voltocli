@@ -8,6 +8,8 @@ CLI to help Volto addon development
 yarn global add voltocli
 
 # or npm i -g voltocli
+# or (I like this one)
+npx voltocli
 ```
 
 ## Usage
