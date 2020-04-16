@@ -3,7 +3,8 @@ const fs = require('fs-extra')
 const writeJsonFile = require('write-json-file')
 const loadJsonFile = require('load-json-file')
 const merge = require('lodash.merge')
-const execa = require('execa')
+const util = require('util')
+const exec = util.promisify(require('child_process').exec)
 
 exports.mkAddonsDir = async () => {
   try {
@@ -12,21 +13,6 @@ exports.mkAddonsDir = async () => {
     console.error(err)
   }
 }
-
-// exports.cloneRepo = async (url) => {
-//   await new Promise((done, failed) => {
-//     execa(`git clone ${url}`, { cwd: 'src/addons/' }, (err, stdout, stderr) => {
-//       if (err) {
-//         err.stdout = stdout
-//         err.stderr = stderr
-//         failed(err)
-//         return
-//       }
-
-//       done({ stdout, stderr })
-//     })
-//   })
-// }
 
 exports.getRepoNameFromURL = (url) => {
   return url.split('/').slice(-2)[0].split(/:|\./).pop() + '/' + url.split('/').slice(-2)[1].split(/\.|\//)[0]
@@ -165,12 +151,10 @@ exports.applyConfigs = async (name, url) => {
   ])
 }
 
-// exports.runYarn = (url) => {
-//   try {
-//     const repo = url.replace(/git@/, '') + '#latest'
-//     console.log('\nrepo: ' + repo + '\n')
-//     console.log(execa.commandSync('yarn', ['add', repo]))
-//   } catch (err) {
-//     console.error(err)
-//   }
-// }
+exports.runYarn = async (url) => {
+  try {
+    await exec(`yarn install`)
+  } catch (err) {
+    console.error(err)
+  }
+}
