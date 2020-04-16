@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 'use strict'
 const { prompt } = require('prompts')
 const validate = require('validate-npm-package-name')
