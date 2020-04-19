@@ -11,7 +11,7 @@ exports.mkAddonsDir = async () => {
   try {
     await fs.mkdirp(`src/addons`)
   } catch (err) {
-    console.error(err)
+    console.error('\n' + err)
     process.exit(1)
   }
 }
@@ -22,7 +22,7 @@ exports.cloneTemplate = async (name, url) => {
     await git('./src/addons').clone(templateUrl, name)
     await fs.remove(`./src/addons/${name}/.git`)
   } catch (err) {
-    console.error(err)
+    console.error('\n' + err)
     process.exit(1)
   }
 }
@@ -49,7 +49,7 @@ const replaceInFile = async (fileName, data) => {
       await fs.writeFile(fileName, fileContent)
     }
   } catch (err) {
-    console.error(err)
+    console.error('\n' + err)
     process.exit(1)
   }
 }
@@ -67,7 +67,7 @@ exports.configTemplate = async (name, url, description, author) => {
     await repo.addRemote('origin', url.ssh({ noGitPlus: true }))
     await repo.push('origin', 'master')
   } catch (err) {
-    console.error(err)
+    console.error('\n' + err)
     process.exit(1)
   }
 }
@@ -98,7 +98,7 @@ const applyToPackageJson = async (name, url) => {
     }
     await writeJsonFile('package.json', updatedJson)
   } catch (err) {
-    console.error(err)
+    console.error('\n' + err)
     process.exit(1)
   }
 }
@@ -109,7 +109,7 @@ const applyToMrsDev = async (name, url) => {
     mrsDevJson = await loadJsonFile('mrs.developer.json')
   } catch (err) {
     if (err.code !== 'ENOENT') {
-      console.error(err)
+      console.error('\n' + err)
       process.exit(1)
     }
   }
@@ -122,7 +122,7 @@ const applyToMrsDev = async (name, url) => {
   try {
     await writeJsonFile('mrs.developer.json', updatedJson)
   } catch (err) {
-    console.error(err)
+    console.error('\n' + err)
     process.exit(1)
   }
 }
@@ -133,7 +133,7 @@ const applyToEslintrc = async (name) => {
     eslintrc = await loadJsonFile('.eslintrc')
   } catch (err) {
     if (err.code !== 'ENOENT') {
-      console.error(err)
+      console.error('\n' + err)
       process.exit(1)
     }
   }
@@ -153,7 +153,7 @@ const applyToEslintrc = async (name) => {
   try {
     await writeJsonFile('.eslintrc', updatedJson)
   } catch (err) {
-    console.error(err)
+    console.error('\n' + err)
     process.exit(1)
   }
 }
@@ -164,7 +164,7 @@ const applyToJsconfig = async (name) => {
     jsconfig = await loadJsonFile('jsconfig.json')
   } catch (err) {
     if (err.code !== 'ENOENT') {
-      console.error(err)
+      console.error('\n' + err)
       process.exit(1)
     }
   }
@@ -183,7 +183,7 @@ const applyToJsconfig = async (name) => {
   try {
     await writeJsonFile('jsconfig.json', updatedJson)
   } catch (err) {
-    console.error(err)
+    console.error('\n' + err)
     process.exit(1)
   }
 }
@@ -193,7 +193,7 @@ const applyToGitIgnore = async () => {
   try {
     gitignore = await fs.readFile('.gitignore')
   } catch (err) {
-    console.error(err)
+    console.error('\n' + err)
     process.exit(1)
   }
 
@@ -204,7 +204,7 @@ const applyToGitIgnore = async () => {
     try {
       await fs.writeFile('.gitignore', gitignore)
     } catch (err) {
-      console.error(err)
+      console.error('\n' + err)
       process.exit(1)
     }
   }
@@ -218,6 +218,14 @@ exports.applyConfigs = async (name, url) => {
     applyToEslintrc(name),
     applyToGitIgnore(),
   ])
+}
+
+exports.formatJson = async () => {
+  try {
+    await exec('npx prettier --write .eslintrc* jsconfig.json package.json mrs.developer.json')
+  } catch (err) {
+    console.error('\n' + err)
+  }
 }
 
 exports.runYarn = async () => {
