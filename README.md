@@ -1,5 +1,8 @@
 # voltocli
 
+[![npm version](https://img.shields.io/github/package-json/v/nzambello/voltocli)](https://www.npmjs.com/package/voltocli)
+  
+
 CLI to help Volto addon development
 
 ## Install
