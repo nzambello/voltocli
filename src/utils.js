@@ -58,7 +58,7 @@ exports.configTemplate = async (name, url, description, author) => {
   try {
     const data = { name, url, description, author }
     const files = ['package.json', 'README.md']
-    await Promise.all(files.map((file) => replaceInFile(`./src/addons/${name}/${file}`, data)))
+    await Promise.all(files.map(file => replaceInFile(`./src/addons/${name}/${file}`, data)))
 
     const repo = git(`./src/addons/${name}`)
     await repo.init()
@@ -76,12 +76,12 @@ const applyToPackageJson = async (name, url) => {
   try {
     const packageJson = await loadJsonFile('package.json')
     const newJson = {
+      private: true,
       scripts: {
         'develop:npx': 'npx -p mrs-developer missdev --config=jsconfig.json --output=addons',
         develop: 'missdev --config=jsconfig.json --output=addons',
         omelette: 'ln -sf node_modules/@plone/volto/ omelette',
         preinstall: 'if [ -f $(pwd)/node_modules/.bin/missdev ]; then yarn develop; else yarn develop:npx; fi',
-        postinstall: 'rm -rf ./node_modules/volto-* && yarn omelette',
       },
       jest: {
         moduleNameMapper: {
@@ -94,9 +94,21 @@ const applyToPackageJson = async (name, url) => {
       },
     }
     const updatedJson = merge(packageJson, newJson)
+
     if (updatedJson.jest.testMatch && updatedJson.jest.testMatch.indexOf('!**/src/addons/**/*') === -1) {
       updatedJson.jest.testMatch.push('!**/src/addons/**/*')
     }
+
+    if (!updatedJson.workspaces) {
+      updatedJson.workspaces = []
+    }
+    updatedJson.workspaces.push(`src/addons/${name}`)
+
+    if (!updatedJson.addons) {
+      updatedJson.addons = []
+    }
+    updatedJson.workspaces.push(name)
+
     await writeJsonFile('package.json', updatedJson)
   } catch (err) {
     console.error('\n' + err)
@@ -128,38 +140,7 @@ const applyToMrsDev = async (name, url) => {
   }
 }
 
-const applyToEslintrc = async (name) => {
-  let eslintrc = {}
-  try {
-    eslintrc = await loadJsonFile('.eslintrc')
-  } catch (err) {
-    if (err.code !== 'ENOENT') {
-      console.error('\n' + err)
-      process.exit(1)
-    }
-  }
-
-  const newJson = {
-    settings: {
-      'import/resolver': {
-        alias: {},
-      },
-    },
-  }
-
-  const updatedJson = merge(eslintrc, newJson)
-  if (!updatedJson.settings['import/resolver'].alias.map) updatedJson.settings['import/resolver'].alias.map = []
-  updatedJson.settings['import/resolver'].alias.map.push([name, `./src/addons/${name}/src`])
-
-  try {
-    await writeJsonFile('.eslintrc', updatedJson)
-  } catch (err) {
-    console.error('\n' + err)
-    process.exit(1)
-  }
-}
-
-const applyToJsconfig = async (name) => {
+const applyToJsconfig = async name => {
   let jsconfig = {}
   try {
     jsconfig = await loadJsonFile('jsconfig.json')
@@ -216,7 +197,6 @@ exports.applyConfigs = async (name, url) => {
     applyToPackageJson(name, url),
     applyToMrsDev(name, url),
     applyToJsconfig(name),
-    applyToEslintrc(name),
     applyToGitIgnore(),
   ])
 }
