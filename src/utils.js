@@ -89,8 +89,10 @@ const applyToPackageJson = async (name, url) => {
         },
       },
       dependencies: {
-        'mrs-developer': '^1.1.6',
         [name]: url.path(),
+      },
+      devDependencies: {
+        'mrs-developer': '^1.1.6',
       },
     }
     const updatedJson = merge(packageJson, newJson)
