@@ -1,6 +1,6 @@
 {
   "name": "voltocli",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "CLI to help Volto addon development",
   "main": "src/cli.js",
   "bin": {
