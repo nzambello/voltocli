@@ -109,7 +109,7 @@ const applyToPackageJson = async (name, url) => {
     if (!updatedJson.addons) {
       updatedJson.addons = []
     }
-    updatedJson.workspaces.push(name)
+    updatedJson.addons.push(name)
 
     await writeJsonFile('package.json', updatedJson)
   } catch (err) {
