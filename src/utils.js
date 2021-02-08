@@ -78,8 +78,8 @@ const applyToPackageJson = async (name, url) => {
     const newJson = {
       private: true,
       scripts: {
-        'develop:npx': 'npx -p mrs-developer missdev --config=jsconfig.json --output=addons',
-        develop: 'missdev --config=jsconfig.json --output=addons',
+        'develop:npx': 'npx -p mrs-developer missdev --config=jsconfig.json --output=addons --fetch-https',
+        develop: 'missdev --config=jsconfig.json --output=addons --fetch-https',
         omelette: 'ln -sf node_modules/@plone/volto/ omelette',
         preinstall: 'if [ -f $(pwd)/node_modules/.bin/missdev ]; then yarn develop; else yarn develop:npx; fi',
       },
@@ -92,7 +92,7 @@ const applyToPackageJson = async (name, url) => {
         [name]: url.path(),
       },
       devDependencies: {
-        'mrs-developer': '^1.1.6',
+        'mrs-developer': '1.5.0',
       },
     }
     const updatedJson = merge(packageJson, newJson)
