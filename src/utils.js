@@ -57,7 +57,7 @@ const replaceInFile = async (fileName, data) => {
 exports.configTemplate = async (name, url, description, author) => {
   try {
     const data = { name, url, description, author }
-    const files = ['package.json', 'README.md']
+    const files = ['package.json', 'README.md', 'LICENSE']
     await Promise.all(files.map(file => replaceInFile(`./src/addons/${name}/${file}`, data)))
 
     const repo = git(`./src/addons/${name}`)
