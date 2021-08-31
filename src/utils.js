@@ -58,14 +58,14 @@ exports.configTemplate = async (name, url, description, author) => {
   try {
     const data = { name, url, description, author }
     const files = ['package.json', 'README.md', 'LICENSE']
-    await Promise.all(files.map(file => replaceInFile(`./src/addons/${name}/${file}`, data)))
+    await Promise.all(files.map((file) => replaceInFile(`./src/addons/${name}/${file}`, data)))
 
     const repo = git(`./src/addons/${name}`)
     await repo.init()
     await repo.add('.')
     await repo.commit('created addon with voltocli')
     await repo.addRemote('origin', url.ssh({ noGitPlus: true }))
-    await repo.push('origin', 'master')
+    await repo.push('origin', git.branch().current)
   } catch (err) {
     console.error('\n' + err)
     process.exit(1)
@@ -142,7 +142,7 @@ const applyToMrsDev = async (name, url) => {
   }
 }
 
-const applyToJsconfig = async name => {
+const applyToJsconfig = async (name) => {
   let jsconfig = {}
   try {
     jsconfig = await loadJsonFile('jsconfig.json')
