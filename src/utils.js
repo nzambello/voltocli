@@ -65,7 +65,8 @@ exports.configTemplate = async (name, url, description, author) => {
     await repo.add('.')
     await repo.commit('created addon with voltocli')
     await repo.addRemote('origin', url.ssh({ noGitPlus: true }))
-    await repo.push('origin', git.branch().current)
+    const localBranch = (await repo.branchLocal()).current
+    await repo.push('origin', localBranch)
   } catch (err) {
     console.error('\n' + err)
     process.exit(1)
